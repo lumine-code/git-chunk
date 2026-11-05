@@ -1,5 +1,5 @@
 {
-  "name": "git-diff",
+  "name": "git-chunk",
   "author": "lumine-code",
   "version": "1.0.0",
   "description": "Marks lines in the editor gutter that have been added, edited, or deleted since the last commit.",
@@ -11,9 +11,9 @@
     "delta",
     "marker"
   ],
-  "repository": "https://github.com/lumine-code/git-diff",
+  "repository": "https://github.com/lumine-code/git-chunk",
   "bugs": {
-    "url": "https://github.com/lumine-code/git-diff/issues"
+    "url": "https://github.com/lumine-code/git-chunk/issues"
   },
   "license": "MIT",
   "main": "./lib/main",
@@ -61,7 +61,7 @@
     },
     "marker": {
       "title": "Marker",
-      "description": "Settings of the git-diff layer drawn on the scrollbar and minimap by the marker hub.",
+      "description": "Settings of the git-chunk layer drawn on the scrollbar and minimap by the marker hub.",
       "type": "object",
       "properties": {
         "enabled": {

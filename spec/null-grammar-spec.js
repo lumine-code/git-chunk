@@ -1,6 +1,6 @@
 const path = require("node:path");
 
-describe("git-diff with no grammar", () => {
+describe("git-chunk with no grammar", () => {
   let editor, main;
   beforeEach(async () => {
     await lumine.packages.activatePackage("language-text");

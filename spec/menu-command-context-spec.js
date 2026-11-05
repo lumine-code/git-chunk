@@ -1,7 +1,7 @@
 const path = require("node:path");
 const packageRoot = path.join(__dirname, "..");
 
-describe("git-diff menu commands in captured presentation contexts", () => {
+describe("git-chunk menu commands in captured presentation contexts", () => {
   // Processing fixtures use a real grammar; None deliberately disables this package.
   beforeEach(async () => {
     await lumine.packages.activatePackage("language-text");
@@ -24,7 +24,7 @@ describe("git-diff menu commands in captured presentation contexts", () => {
   });
 
   afterEach(async () => {
-    await lumine.packages.deactivatePackage("git-diff");
+    await lumine.packages.deactivatePackage("git-chunk");
     await lumine.workspace.discardEditorWindows();
     if (notebook) await lumine.workspace.paneForItem(notebook)?.destroyItem(notebook);
     first?.destroy();
@@ -41,9 +41,9 @@ describe("git-diff menu commands in captured presentation contexts", () => {
     extra.getElement().appendChild(button);
     expect(lumine.workspace.getActiveTextEditor()).toBe(first);
 
-    await lumine.commands.dispatch(button, "git-diff:toggle-diff-list");
+    await lumine.commands.dispatch(button, "git-chunk:toggle-diff-list");
 
-    expect(lumine.commands.canDispatch(button, "git-diff:toggle-diff-list")).toBe(false);
+    expect(lumine.commands.canDispatch(button, "git-chunk:toggle-diff-list")).toBe(false);
     expect(captured).not.toHaveBeenCalled();
   });
 
@@ -65,9 +65,9 @@ describe("git-diff menu commands in captured presentation contexts", () => {
     expect(context.embeddedEditor).toBe(second);
     expect(lumine.workspace.getActiveTextEditor()).toBe(first);
 
-    await lumine.commands.dispatch(button, "git-diff:toggle-diff-list");
+    await lumine.commands.dispatch(button, "git-chunk:toggle-diff-list");
 
-    expect(lumine.commands.canDispatch(button, "git-diff:toggle-diff-list")).toBe(false);
+    expect(lumine.commands.canDispatch(button, "git-chunk:toggle-diff-list")).toBe(false);
     expect(captured).not.toHaveBeenCalled();
   });
 
@@ -79,7 +79,7 @@ describe("git-diff menu commands in captured presentation contexts", () => {
     extra.getElement().appendChild(button);
     expect(lumine.workspace.getActiveTextEditor()).toBe(first);
 
-    await lumine.commands.dispatch(button, "git-diff:toggle-diff-list");
+    await lumine.commands.dispatch(button, "git-chunk:toggle-diff-list");
 
     expect(captured).not.toHaveBeenCalled();
   });

@@ -1,4 +1,4 @@
-describe("git-diff pickers in editor windows", () => {
+describe("git-chunk pickers in editor windows", () => {
   // Processing fixtures use a real grammar; None deliberately disables this package.
   beforeEach(async () => {
     await lumine.packages.activatePackage("language-text");
@@ -8,10 +8,10 @@ describe("git-diff pickers in editor windows", () => {
   beforeEach(async () => {
     jasmine.useRealClock();
     jasmine.attachToDOM(lumine.workspace.getElement());
-    await lumine.packages.activatePackage("git-diff");
+    await lumine.packages.activatePackage("git-chunk");
   });
   afterEach(async () => {
-    await lumine.packages.deactivatePackage("git-diff");
+    await lumine.packages.deactivatePackage("git-chunk");
     await lumine.workspace.discardEditorWindows();
     await fixture?.cleanup();
     fixture = null;
@@ -24,10 +24,10 @@ describe("git-diff pickers in editor windows", () => {
     const second = workspace.buildTextEditor({ buffer: first.getBuffer() });
     extra.getEditorContainer().getActivePane().activateItem(second, { activatePane: true });
     await conditionPromise(() =>
-      lumine.commands.canDispatch(second.getElement(), "git-diff:toggle-diff-list"),
+      lumine.commands.canDispatch(second.getElement(), "git-chunk:toggle-diff-list"),
     );
-    await lumine.commands.dispatch(first.getElement(), "git-diff:toggle-diff-list");
-    await lumine.commands.dispatch(second.getElement(), "git-diff:toggle-diff-list");
+    await lumine.commands.dispatch(first.getElement(), "git-chunk:toggle-diff-list");
+    await lumine.commands.dispatch(second.getElement(), "git-chunk:toggle-diff-list");
     const local = workspace
       .getMainWindow()
       .getElement()

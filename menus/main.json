@@ -5,13 +5,13 @@
       "submenu": [
         {
           "label": "Go to Next Diff",
-          "command": "git-diff:move-to-next-diff",
+          "command": "git-chunk:move-to-next-diff",
           "group": "changes",
           "order": 10
         },
         {
           "label": "Go to Previous Diff",
-          "command": "git-diff:move-to-previous-diff",
+          "command": "git-chunk:move-to-previous-diff",
           "group": "changes",
           "order": 20
         }
@@ -22,7 +22,7 @@
       "submenu": [
         {
           "label": "List File Changes…",
-          "command": "git-diff:toggle-diff-list",
+          "command": "git-chunk:toggle-diff-list",
           "group": "changes",
           "order": 15
         }
@@ -32,19 +32,19 @@
       "label": "Packages",
       "submenu": [
         {
-          "label": "Git Diff",
+          "label": "Git Chunk",
           "submenu": [
             {
               "label": "Move to Next Diff",
-              "command": "git-diff:move-to-next-diff"
+              "command": "git-chunk:move-to-next-diff"
             },
             {
               "label": "Move to Previous Diff",
-              "command": "git-diff:move-to-previous-diff"
+              "command": "git-chunk:move-to-previous-diff"
             },
             {
               "label": "Toggle Diff List",
-              "command": "git-diff:toggle-diff-list"
+              "command": "git-chunk:toggle-diff-list"
             }
           ]
         }

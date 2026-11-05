@@ -4,13 +4,13 @@ const { ChildProcess } = require("child_process");
 const { GitRepository } = require("lumine");
 
 module.exports = function captureFixture() {
-  const GitDiffView = require("../lib/git-diff-view");
+  const GitChunkView = require("../lib/git-chunk-view");
   const originalEditors = new Set(lumine.workspace.getTextEditors());
   const originalPaths = lumine.project.getPaths();
   const work = [
-    spyOn(GitDiffView.prototype, "bindRepository").and.callThrough(),
+    spyOn(GitChunkView.prototype, "bindRepository").and.callThrough(),
     spyOn(lumine.repositories, "resolveForPath").and.callThrough(),
-    spyOn(GitDiffView.prototype, "updateDiffs").and.callThrough(),
+    spyOn(GitChunkView.prototype, "updateDiffs").and.callThrough(),
     spyOn(GitRepository.prototype, "repositoryHostRequest").and.callThrough(),
     spyOn(lumine.project, "repositoryForPathFromProviders").and.callThrough(),
     spyOn(lumine.repositories, "scanProjectRoots").and.callThrough(),

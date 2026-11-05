@@ -3,12 +3,12 @@ const fs = require("@lumine-code/fs-plus");
 const temp = require("@lumine-code/fs-temp").track();
 
 const commands = [
-  "git-diff:toggle-diff-list",
-  "git-diff:move-to-next-diff",
-  "git-diff:move-to-previous-diff",
+  "git-chunk:toggle-diff-list",
+  "git-chunk:move-to-next-diff",
+  "git-chunk:move-to-previous-diff",
 ];
 
-describe("git-diff", () => {
+describe("git-chunk", () => {
   // Processing fixtures use a real grammar; None deliberately disables this package.
   beforeEach(async () => {
     await lumine.packages.activatePackage("language-text");
@@ -17,7 +17,7 @@ describe("git-diff", () => {
   let editor, element;
 
   beforeEach(async () => {
-    const projectPath = temp.mkdirSync("git-diff-spec-");
+    const projectPath = temp.mkdirSync("git-chunk-spec-");
     fs.copySync(path.join(__dirname, "fixtures", "working-dir"), projectPath);
     fs.moveSync(path.join(projectPath, "git.git"), path.join(projectPath, ".git"));
     lumine.project.setPaths([projectPath]);
@@ -32,10 +32,10 @@ describe("git-diff", () => {
 
   describe("When the module is deactivated", () => {
     it("removes all registered command hooks after deactivation.", async () => {
-      await lumine.packages.activatePackage("git-diff");
-      await lumine.packages.deactivatePackage("git-diff");
+      await lumine.packages.activatePackage("git-chunk");
+      await lumine.packages.deactivatePackage("git-chunk");
       // NOTE: don't use enable and disable from the Public API.
-      expect(lumine.packages.isPackageActive("git-diff")).toBe(false);
+      expect(lumine.packages.isPackageActive("git-chunk")).toBe(false);
 
       lumine.commands
         .findCommands({ target: element })

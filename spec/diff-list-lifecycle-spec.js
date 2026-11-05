@@ -1,4 +1,4 @@
-describe("Git Diff picker pending ownership", () => {
+describe("Git Chunk picker pending ownership", () => {
   // Processing fixtures use a real grammar; None deliberately disables this package.
   beforeEach(async () => {
     await lumine.packages.activatePackage("language-text");
@@ -16,7 +16,7 @@ describe("Git Diff picker pending ownership", () => {
   };
 
   beforeEach(async () => {
-    await lumine.packages.activatePackage("git-diff");
+    await lumine.packages.activatePackage("git-chunk");
     const DiffListView = require("../lib/diff-list-view");
     editor = await lumine.workspace.open();
     editor.setText("first\nchanged\nlast\n");
@@ -255,9 +255,9 @@ describe("Git Diff picker pending ownership", () => {
     });
     const dispatched = lumine.commands.dispatch(
       lumine.views.getView(lumine.workspace),
-      "git-diff:toggle-diff-list",
+      "git-chunk:toggle-diff-list",
     );
-    await lumine.packages.deactivatePackage("git-diff");
+    await lumine.packages.deactivatePackage("git-chunk");
     update.resolve();
     await dispatched;
     expect(await commandResult).toBeNull();
@@ -274,14 +274,14 @@ describe("Git Diff picker pending ownership", () => {
       host = addList(...args);
       return host;
     });
-    await lumine.commands.dispatch(fixture.editor.getElement(), "git-diff:toggle-diff-list");
+    await lumine.commands.dispatch(fixture.editor.getElement(), "git-chunk:toggle-diff-list");
     expect(host.isVisible()).toBe(true);
     fixture.editor.destroy();
     editor.destroy();
     const target = lumine.workspace.getElement();
     expect(host.isVisible()).toBe(false);
-    expect(lumine.commands.canDispatch(target, "git-diff:toggle-diff-list")).toBe(false);
-    expect(lumine.commands.dispatch(target, "git-diff:toggle-diff-list")).toBeNull();
+    expect(lumine.commands.canDispatch(target, "git-chunk:toggle-diff-list")).toBe(false);
+    expect(lumine.commands.dispatch(target, "git-chunk:toggle-diff-list")).toBeNull();
   });
 
   it("allows closing a live owner's visible picker without active editor resolution", async () => {
@@ -292,19 +292,19 @@ describe("Git Diff picker pending ownership", () => {
       host = addList(...args);
       return host;
     });
-    await lumine.commands.dispatch(fixture.editor.getElement(), "git-diff:toggle-diff-list");
+    await lumine.commands.dispatch(fixture.editor.getElement(), "git-chunk:toggle-diff-list");
     const container = lumine.workspace.getMainWindow().getEditorContainer();
     const activeItem = spyOn(container.getActivePane(), "getActiveItem").and.returnValue(null);
     const embedded = spyOn(container, "getActiveEmbeddedTextEditor").and.returnValue(null);
     try {
       const target = lumine.workspace.getElement();
       expect(lumine.workspace.resolveCommandContext(target).editor).toBeFalsy();
-      expect(lumine.commands.canDispatch(target, "git-diff:move-to-next-diff")).toBe(false);
+      expect(lumine.commands.canDispatch(target, "git-chunk:move-to-next-diff")).toBe(false);
       expect(fixture.editor.isDestroyed()).toBe(false);
       expect(host.isVisible()).toBe(true);
-      expect(lumine.commands.canDispatch(target, "git-diff:toggle-diff-list")).toBe(true);
+      expect(lumine.commands.canDispatch(target, "git-chunk:toggle-diff-list")).toBe(true);
 
-      await lumine.commands.dispatch(target, "git-diff:toggle-diff-list");
+      await lumine.commands.dispatch(target, "git-chunk:toggle-diff-list");
 
       expect(host.isVisible()).toBe(false);
     } finally {

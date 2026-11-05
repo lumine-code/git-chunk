@@ -3,7 +3,7 @@ const fs = require("@lumine-code/fs-plus");
 const temp = require("@lumine-code/fs-temp").track();
 const captureFixture = require("./fixture");
 
-describe("GitDiff when targeting nested repository", () => {
+describe("GitChunk when targeting nested repository", () => {
   // Processing fixtures use a real grammar; None deliberately disables this package.
   beforeEach(async () => {
     await lumine.packages.activatePackage("language-text");
@@ -18,7 +18,7 @@ describe("GitDiff when targeting nested repository", () => {
     });
     spyOn(window, "cancelAnimationFrame").and.callFake((_i) => null);
 
-    projectPath = temp.mkdirSync("git-diff-spec-");
+    projectPath = temp.mkdirSync("git-chunk-spec-");
 
     fs.copySync(path.join(__dirname, "fixtures", "working-dir"), projectPath);
     fs.moveSync(path.join(projectPath, "git.git"), path.join(projectPath, ".git"));
@@ -35,7 +35,7 @@ describe("GitDiff when targeting nested repository", () => {
     jasmine.attachToDOM(lumine.workspace.getElement());
 
     await lumine.workspace.open(path.join(nestedPath, "sample.js"));
-    await lumine.packages.activatePackage("git-diff");
+    await lumine.packages.activatePackage("git-chunk");
 
     editor = lumine.workspace.getActiveTextEditor();
     editorElement = lumine.views.getView(editor);
@@ -46,11 +46,11 @@ describe("GitDiff when targeting nested repository", () => {
     await temp.cleanup();
   });
 
-  describe("When git-diff targets a file in a nested git-repository", () => {
+  describe("When git-chunk targets a file in a nested git-repository", () => {
     /***
      * Non-hack regression prevention for nested repositories. If we know
      * that our project path contains two repositories, we can ensure that
-     * git-diff is targeting the correct one by creating an artificial change
+     * git-chunk is targeting the correct one by creating an artificial change
      * in the ancestor repository, which is percieved differently within the
      * child. In this case, creating a new file will not generate markers in
      * the ancestor repo, even if there are changes; but changes will be

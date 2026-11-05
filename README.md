@@ -1,4 +1,4 @@
-# git-diff
+# git-chunk
 
 Marks lines in the editor gutter that have been added, edited, or deleted since the last commit.
 
@@ -19,15 +19,15 @@ Fork of [pulsar-edit/pulsar](https://github.com/pulsar-edit/pulsar) (`packages/g
 
 ## Installation
 
-To install `git-diff` search for it in the Install pane of the Lumine settings, or run the command `lumine --install lumine-code/git-diff`.
+To install `git-chunk` search for it in the Install pane of the Lumine settings, or run the command `lumine --install lumine-code/git-chunk`.
 
 ## Commands
 
 Commands available in `lumine-workspace`:
 
-- `git-diff:move-to-next-diff`: move the cursor to the next diff,
-- `git-diff:move-to-previous-diff`: move the cursor to the previous diff,
-- `git-diff:toggle-diff-list`: toggle the list of diffs in the current file.
+- `git-chunk:move-to-next-diff`: move the cursor to the next diff,
+- `git-chunk:move-to-previous-diff`: move the cursor to the previous diff,
+- `git-chunk:toggle-diff-list`: toggle the list of diffs in the current file.
 
 ## Usage
 

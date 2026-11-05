@@ -7,7 +7,7 @@ module.exports = async function changedEditorFixture() {
   jasmine.useRealClock();
   jasmine.attachToDOM(lumine.workspace.getElement());
   const settle = captureFixture();
-  const directory = temp.mkdirSync("git-diff-command-");
+  const directory = temp.mkdirSync("git-chunk-command-");
   fs.copySync(path.join(__dirname, "fixtures", "working-dir"), directory);
   fs.moveSync(path.join(directory, "git.git"), path.join(directory, ".git"));
   lumine.project.setPaths([directory]);
@@ -15,7 +15,7 @@ module.exports = async function changedEditorFixture() {
   editor.insertText("changed ");
   try {
     await conditionPromise(() =>
-      lumine.commands.canDispatch(editor.getElement(), "git-diff:toggle-diff-list"),
+      lumine.commands.canDispatch(editor.getElement(), "git-chunk:toggle-diff-list"),
     );
   } catch (error) {
     await settle(directory);

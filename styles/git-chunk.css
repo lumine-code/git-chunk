@@ -1,5 +1,5 @@
 lumine-text-editor {
-  .gutter:not(.git-diff-icon) .line-number {
+  .gutter:not(.git-chunk-icon) .line-number {
     &.git-line-modified {
       color: var(--syntax-color-modified);
     }
@@ -44,7 +44,7 @@ lumine-text-editor {
     }
   }
 
-  .gutter.git-diff-icon .line-number {
+  .gutter.git-chunk-icon .line-number {
     border-left-width: 0;
     padding-left: 1.4em; /* space for diff icon */
 

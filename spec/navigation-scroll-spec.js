@@ -1,4 +1,4 @@
-describe("Git Diff destination scrolling", () => {
+describe("Git Chunk destination scrolling", () => {
   // Processing fixtures use a real grammar; None deliberately disables this package.
   beforeEach(async () => {
     await lumine.packages.activatePackage("language-text");
@@ -7,13 +7,13 @@ describe("Git Diff destination scrolling", () => {
   let editor, lineView, listView;
 
   beforeEach(async () => {
-    await lumine.packages.activatePackage("git-diff");
-    const GitDiffView = require("../lib/git-diff-view");
+    await lumine.packages.activatePackage("git-chunk");
+    const GitChunkView = require("../lib/git-chunk-view");
     const DiffListView = require("../lib/diff-list-view");
     jasmine.attachToDOM(lumine.workspace.getElement());
     editor = await lumine.workspace.open();
     editor.setText("first\n    changed\n   \nlast");
-    lineView = Object.create(GitDiffView.prototype);
+    lineView = Object.create(GitChunkView.prototype);
     lineView.editor = editor;
     listView = new DiffListView(() => []);
     await listView.toggle();

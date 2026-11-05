@@ -2,7 +2,7 @@ const path = require("path");
 const fs = require("@lumine-code/fs-plus");
 const temp = require("@lumine-code/fs-temp").track();
 
-describe("git-diff:toggle-diff-list", () => {
+describe("git-chunk:toggle-diff-list", () => {
   // Processing fixtures use a real grammar; None deliberately disables this package.
   beforeEach(async () => {
     await lumine.packages.activatePackage("language-text");
@@ -11,7 +11,7 @@ describe("git-diff:toggle-diff-list", () => {
   let diffListView, editor;
 
   beforeEach(async () => {
-    const projectPath = temp.mkdirSync("git-diff-spec-");
+    const projectPath = temp.mkdirSync("git-chunk-spec-");
     fs.copySync(path.join(__dirname, "fixtures", "working-dir"), projectPath);
     fs.moveSync(path.join(projectPath, "git.git"), path.join(projectPath, ".git"));
     lumine.project.setPaths([projectPath]);
@@ -19,7 +19,7 @@ describe("git-diff:toggle-diff-list", () => {
     jasmine.attachToDOM(lumine.workspace.getElement());
 
     await lumine.workspace.open(path.join(projectPath, "sample.js"));
-    await lumine.packages.activatePackage("git-diff");
+    await lumine.packages.activatePackage("git-chunk");
 
     editor = lumine.workspace.getActiveTextEditor();
 
@@ -29,7 +29,7 @@ describe("git-diff:toggle-diff-list", () => {
     // computation to land before toggling.
     advanceClock(editor.getBuffer().stoppedChangingDelay);
     await conditionPromise(() => editor.getMarkers().length > 0);
-    lumine.commands.dispatch(editor.getElement(), "git-diff:toggle-diff-list");
+    lumine.commands.dispatch(editor.getElement(), "git-chunk:toggle-diff-list");
 
     await conditionPromise(() => {
       diffListView = document.querySelector(".diff-list-view");
@@ -47,7 +47,7 @@ describe("git-diff:toggle-diff-list", () => {
     );
     expect(list.getActions()).toContain(
       jasmine.objectContaining({
-        command: "git-diff:open-diff",
+        command: "git-chunk:open-diff",
         context: "item",
         primary: true,
         disposition: "close",

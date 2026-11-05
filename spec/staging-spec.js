@@ -4,7 +4,7 @@ const { execFile } = require("child_process");
 const temp = require("@lumine-code/fs-temp").track();
 const captureFixture = require("./fixture");
 
-describe("Git Diff staged and unstaged changes", () => {
+describe("Git Chunk staged and unstaged changes", () => {
   // Processing fixtures use a real grammar; None deliberately disables this package.
   beforeEach(async () => {
     await lumine.packages.activatePackage("language-text");
@@ -69,7 +69,7 @@ describe("Git Diff staged and unstaged changes", () => {
   }
 
   function expectStagedOverviewColor(kind, color) {
-    const provider = lumine.packages.getActivePackage("git-diff").mainModule.provideMarkerLayer();
+    const provider = lumine.packages.getActivePackage("git-chunk").mainModule.provideMarkerLayer();
     const overview = provider.getItems({
       editor,
       cache: new Map([["diffs", view.diffs]]),
@@ -77,7 +77,7 @@ describe("Git Diff staged and unstaged changes", () => {
     expect(overview.length).toBe(1);
     expect(overview[0].cls).toBe(`${kind} staged`);
     const marker = document.createElement("div");
-    marker.className = `marker marker-git-diff ${overview[0].cls}`;
+    marker.className = `marker marker-git-chunk ${overview[0].cls}`;
     marker.style.setProperty(`--syntax-color-${kind}-staged`, color);
     lumine.workspace.getElement().appendChild(marker);
     try {
@@ -94,34 +94,34 @@ describe("Git Diff staged and unstaged changes", () => {
         ".git-line-added,.git-line-modified,.git-line-removed,.git-previous-line-removed",
       ).length,
     ).toBe(0);
-    const provider = lumine.packages.getActivePackage("git-diff").mainModule.provideMarkerLayer();
+    const provider = lumine.packages.getActivePackage("git-chunk").mainModule.provideMarkerLayer();
     expect(provider.getItems({ editor, cache: new Map([["diffs", view.diffs]]) })).toEqual([]);
-    expect(lumine.commands.canDispatch(element, "git-diff:toggle-diff-list")).toBe(false);
+    expect(lumine.commands.canDispatch(element, "git-chunk:toggle-diff-list")).toBe(false);
   }
 
   beforeEach(async () => {
     cleanup = captureFixture();
-    projectPath = temp.mkdirSync("git-diff-staging-");
+    projectPath = temp.mkdirSync("git-chunk-staging-");
     baseline = Array.from({ length: 20 }, (_, index) => `original line ${index + 1}`);
     await git(["init", "--initial-branch=master"]);
     await fs.promises.writeFile(path.join(projectPath, "sample.txt"), text(baseline));
     await git(["add", "--", "sample.txt"]);
     await git([
       "-c",
-      "user.name=Git Diff Fixture",
+      "user.name=Git Chunk Fixture",
       "-c",
-      "user.email=git-diff-fixture@example.invalid",
+      "user.email=git-chunk-fixture@example.invalid",
       "commit",
       "-m",
       "Initial fixture",
     ]);
 
     lumine.project.setPaths([projectPath]);
-    lumine.config.set("git-diff.showIconsInEditorGutter", false);
+    lumine.config.set("git-chunk.showIconsInEditorGutter", false);
     jasmine.attachToDOM(lumine.workspace.getElement());
     editor = await lumine.workspace.open(path.join(projectPath, "sample.txt"));
     element = lumine.views.getView(editor);
-    const pack = await lumine.packages.activatePackage("git-diff");
+    const pack = await lumine.packages.activatePackage("git-chunk");
     view = pack.mainModule.markerLayer.views.get(editor);
     await conditionPromise(() => view.repository && view.diffs != null);
     repository = view.repository;
@@ -155,7 +155,7 @@ describe("Git Diff staged and unstaged changes", () => {
       secondaryColor,
     );
     expectStagedOverviewColor("modified", secondaryColor);
-    lumine.config.set("git-diff.showIconsInEditorGutter", true);
+    lumine.config.set("git-chunk.showIconsInEditorGutter", true);
     expect(getComputedStyle(element.querySelector(".git-line-modified"), "::before").color).toBe(
       secondaryColor,
     );
@@ -247,7 +247,7 @@ describe("Git Diff staged and unstaged changes", () => {
           ? getComputedStyle(marker, "::before").borderLeftColor
           : getComputedStyle(marker).color;
       expect(renderedColor).toBe(secondaryColor);
-      lumine.config.set("git-diff.showIconsInEditorGutter", true);
+      lumine.config.set("git-chunk.showIconsInEditorGutter", true);
       expect(getComputedStyle(marker, "::before").color).toBe(secondaryColor);
 
       expectStagedOverviewColor(kind, secondaryColor);
@@ -260,7 +260,7 @@ describe("Git Diff staged and unstaged changes", () => {
     await repository.refreshStatusSnapshot();
     editor = await lumine.workspace.open(newPath);
     element = lumine.views.getView(editor);
-    view = lumine.packages.getActivePackage("git-diff").mainModule.markerLayer.views.get(editor);
+    view = lumine.packages.getActivePackage("git-chunk").mainModule.markerLayer.views.get(editor);
     await conditionPromise(() => view.repository && view.diffs != null);
     await waitForDiffs([]);
     expectNoMarkers();
@@ -297,9 +297,9 @@ describe("Git Diff staged and unstaged changes", () => {
 
     await git([
       "-c",
-      "user.name=Git Diff Fixture",
+      "user.name=Git Chunk Fixture",
       "-c",
-      "user.email=git-diff-fixture@example.invalid",
+      "user.email=git-chunk-fixture@example.invalid",
       "commit",
       "-m",
       "First orphan commit",
@@ -318,7 +318,7 @@ describe("Git Diff staged and unstaged changes", () => {
     await repository.refreshStatusSnapshot();
     editor = await lumine.workspace.open(newPath);
     element = lumine.views.getView(editor);
-    view = lumine.packages.getActivePackage("git-diff").mainModule.markerLayer.views.get(editor);
+    view = lumine.packages.getActivePackage("git-chunk").mainModule.markerLayer.views.get(editor);
     await conditionPromise(() => view.repository && view.diffs != null);
     expect(repository.getStatusEntry(newPath).indexBlobOid).toBeNull();
     await waitForDiffs([]);
@@ -334,7 +334,7 @@ describe("Git Diff staged and unstaged changes", () => {
     const newPath = path.join(projectPath, "never-saved.txt");
     editor = await lumine.workspace.open(newPath);
     element = lumine.views.getView(editor);
-    view = lumine.packages.getActivePackage("git-diff").mainModule.markerLayer.views.get(editor);
+    view = lumine.packages.getActivePackage("git-chunk").mainModule.markerLayer.views.get(editor);
     await conditionPromise(() => view.repository && view.diffs != null);
     expect(repository.getStatusEntry(newPath)).toBeNull();
     editor.insertText("first\nsecond\n");
@@ -361,7 +361,7 @@ describe("Git Diff staged and unstaged changes", () => {
     await repository.refreshStatusSnapshot();
     editor = await lumine.workspace.open(newPath);
     element = lumine.views.getView(editor);
-    view = lumine.packages.getActivePackage("git-diff").mainModule.markerLayer.views.get(editor);
+    view = lumine.packages.getActivePackage("git-chunk").mainModule.markerLayer.views.get(editor);
     await conditionPromise(() => view.repository && view.diffs != null);
     const lines = [...baseline];
     lines[4] = "unsaved replacement";
@@ -384,9 +384,9 @@ describe("Git Diff staged and unstaged changes", () => {
     await stage();
     await git([
       "-c",
-      "user.name=Git Diff Fixture",
+      "user.name=Git Chunk Fixture",
       "-c",
-      "user.email=git-diff-fixture@example.invalid",
+      "user.email=git-chunk-fixture@example.invalid",
       "commit",
       "-m",
       "Empty fixture",

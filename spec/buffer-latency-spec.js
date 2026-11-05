@@ -3,7 +3,7 @@ const path = require("path");
 const os = require("os");
 const captureFixture = require("./fixture");
 
-describe("git-diff updates during editing", () => {
+describe("git-chunk updates during editing", () => {
   // Processing fixtures use a real grammar; None deliberately disables this package.
   beforeEach(async () => {
     await lumine.packages.activatePackage("language-text");
@@ -13,13 +13,13 @@ describe("git-diff updates during editing", () => {
 
   beforeEach(async () => {
     cleanup = captureFixture();
-    projectPath = fs.mkdtempSync(path.join(os.tmpdir(), "git-diff-latency-"));
+    projectPath = fs.mkdtempSync(path.join(os.tmpdir(), "git-chunk-latency-"));
     fs.copySync(path.join(__dirname, "fixtures", "working-dir"), projectPath);
     fs.moveSync(path.join(projectPath, "git.git"), path.join(projectPath, ".git"));
     await lumine.project.setPaths([projectPath]);
     jasmine.attachToDOM(lumine.workspace.getElement());
     editor = await lumine.workspace.open(path.join(projectPath, "sample.js"));
-    const main = (await lumine.packages.activatePackage("git-diff")).mainModule;
+    const main = (await lumine.packages.activatePackage("git-chunk")).mainModule;
     view = main.markerLayer.views.get(editor);
     await conditionPromise(() => view.lastDiffInputs != null);
   });
@@ -89,7 +89,7 @@ describe("git-diff updates during editing", () => {
   it("shares one comparison across four panes displaying the same buffer", async () => {
     const pane = lumine.workspace.paneForItem(editor);
     const panes = Array.from({ length: 3 }, () => pane.splitRight({ items: [editor.copy()] }));
-    const main = lumine.packages.getActivePackage("git-diff").mainModule;
+    const main = lumine.packages.getActivePackage("git-chunk").mainModule;
     const views = () =>
       [...main.markerLayer.views.values()].filter(
         (v) => v.editor.getBuffer() === editor.getBuffer(),

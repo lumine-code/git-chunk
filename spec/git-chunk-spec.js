@@ -4,7 +4,7 @@ const temp = require("@lumine-code/fs-temp").track();
 const captureFixture = require("./fixture");
 const { spawn } = require("child_process");
 
-describe("GitDiff package", () => {
+describe("GitChunk package", () => {
   // Processing fixtures use a real grammar; None deliberately disables this package.
   beforeEach(async () => {
     await lumine.packages.activatePackage("language-text");
@@ -21,7 +21,7 @@ describe("GitDiff package", () => {
     });
     spyOn(window, "cancelAnimationFrame").and.callFake((_i) => null);
 
-    projectPath = temp.mkdirSync("git-diff-spec-");
+    projectPath = temp.mkdirSync("git-chunk-spec-");
     const otherPath = temp.mkdirSync("some-other-path-");
 
     fs.copySync(path.join(__dirname, "fixtures", "working-dir"), projectPath);
@@ -31,7 +31,7 @@ describe("GitDiff package", () => {
     jasmine.attachToDOM(lumine.workspace.getElement());
 
     await lumine.workspace.open(path.join(projectPath, "sample.js"));
-    await lumine.packages.activatePackage("git-diff");
+    await lumine.packages.activatePackage("git-chunk");
 
     editor = lumine.workspace.getActiveTextEditor();
     editorElement = lumine.views.getView(editor);
@@ -99,8 +99,8 @@ describe("GitDiff package", () => {
   describe("when the editor has no changes", () => {
     it("does not advertise hunk navigation without any hunks", async () => {
       await conditionPromise(() => screenUpdates > 0);
-      expect(lumine.commands.canDispatch(editorElement, "git-diff:move-to-next-diff")).toBe(false);
-      expect(lumine.commands.canDispatch(editorElement, "git-diff:toggle-diff-list")).toBe(false);
+      expect(lumine.commands.canDispatch(editorElement, "git-chunk:move-to-next-diff")).toBe(false);
+      expect(lumine.commands.canDispatch(editorElement, "git-chunk:toggle-diff-list")).toBe(false);
     });
     it("doesn't mark the editor", async () => {
       await conditionPromise(() => screenUpdates > 0);
@@ -152,9 +152,9 @@ describe("GitDiff package", () => {
       editor.insertText("changed ");
       advanceClock(editor.getBuffer().stoppedChangingDelay);
       await conditionPromise(() =>
-        lumine.commands.canDispatch(editorElement, "git-diff:move-to-next-diff"),
+        lumine.commands.canDispatch(editorElement, "git-chunk:move-to-next-diff"),
       );
-      expect(lumine.commands.canDispatch(editorElement, "git-diff:toggle-diff-list")).toBe(true);
+      expect(lumine.commands.canDispatch(editorElement, "git-chunk:toggle-diff-list")).toBe(true);
     });
     it("highlights the modified lines", async () => {
       expect(editorElement.querySelectorAll(".git-line-modified").length).toBe(0);
@@ -277,7 +277,7 @@ describe("GitDiff package", () => {
       expect(repository.isPathIgnoredCached(ignoredPath)).toBe(true);
       const ignoredEditor = await lumine.workspace.open(ignoredPath);
       const view = lumine.packages
-        .getActivePackage("git-diff")
+        .getActivePackage("git-chunk")
         .mainModule.markerLayer.views.get(ignoredEditor);
       await conditionPromise(() => view.repository === repository && view.diffs != null);
       spyOn(repository, "getLineDiffsAsync").and.callThrough();
@@ -297,7 +297,7 @@ describe("GitDiff package", () => {
     });
 
     it("clears old-path markers before resolving the replacement repository", async () => {
-      const mainModule = lumine.packages.getActivePackage("git-diff").mainModule;
+      const mainModule = lumine.packages.getActivePackage("git-chunk").mainModule;
       const view = mainModule.markerLayer.views.get(editor);
 
       editor.insertText("a");
@@ -321,7 +321,7 @@ describe("GitDiff package", () => {
 
   it("starts tracking an untitled editor saved inside an already registered repository", async () => {
     const untitled = await lumine.workspace.open();
-    const mainModule = lumine.packages.getActivePackage("git-diff").mainModule;
+    const mainModule = lumine.packages.getActivePackage("git-chunk").mainModule;
     const view = mainModule.markerLayer.views.get(untitled);
     await conditionPromise(() => view.repository === null);
     untitled.getBuffer().setPath(path.join(projectPath, "sample.js"));
@@ -334,7 +334,7 @@ describe("GitDiff package", () => {
 
   describe("when an editor is destroyed during a diff update", () => {
     it("aborts the request and drops a late result without touching released state", async () => {
-      const mainModule = lumine.packages.getActivePackage("git-diff").mainModule;
+      const mainModule = lumine.packages.getActivePackage("git-chunk").mainModule;
       const view = mainModule.markerLayer.views.get(editor);
       await conditionPromise(() => view.lastDiffInputs != null && !view.diffAbortController);
 
@@ -364,7 +364,7 @@ describe("GitDiff package", () => {
   describe("when a newer diff supersedes an in-flight update", () => {
     it("coalesces newer revisions without cancelling or multiplying running work", async () => {
       const view = lumine.packages
-        .getActivePackage("git-diff")
+        .getActivePackage("git-chunk")
         .mainModule.markerLayer.views.get(editor);
       await conditionPromise(() => view.lastDiffInputs != null && !view.diffAbortController);
       const requests = [];
@@ -398,7 +398,7 @@ describe("GitDiff package", () => {
 
     it("automatically compares the newest text after an obsolete result completes", async () => {
       const view = lumine.packages
-        .getActivePackage("git-diff")
+        .getActivePackage("git-chunk")
         .mainModule.markerLayer.views.get(editor);
       await conditionPromise(() => view.lastDiffInputs != null && !view.diffAbortController);
       const requests = [];
@@ -420,7 +420,7 @@ describe("GitDiff package", () => {
     });
 
     it("drops a result when its HEAD input changed before the next frame", async () => {
-      const mainModule = lumine.packages.getActivePackage("git-diff").mainModule;
+      const mainModule = lumine.packages.getActivePackage("git-chunk").mainModule;
       const view = mainModule.markerLayer.views.get(editor);
       await conditionPromise(() => view.diffs != null && view.diffAbortController == null);
 
@@ -450,7 +450,7 @@ describe("GitDiff package", () => {
     });
 
     it("drops a result when its index blob changed before the next frame", async () => {
-      const mainModule = lumine.packages.getActivePackage("git-diff").mainModule;
+      const mainModule = lumine.packages.getActivePackage("git-chunk").mainModule;
       const view = mainModule.markerLayer.views.get(editor);
       await conditionPromise(() => view.diffs != null && view.diffAbortController == null);
 
@@ -476,7 +476,7 @@ describe("GitDiff package", () => {
     });
 
     it("clears stale markers when the buffer becomes too large to diff", async () => {
-      const mainModule = lumine.packages.getActivePackage("git-diff").mainModule;
+      const mainModule = lumine.packages.getActivePackage("git-chunk").mainModule;
       const view = mainModule.markerLayer.views.get(editor);
       await conditionPromise(() => view.buffer != null);
 
@@ -504,10 +504,10 @@ describe("GitDiff package", () => {
       // the deletion marker before exercising the navigation commands.
       await conditionPromise(() => editorElement.querySelectorAll(".git-line-removed").length > 0);
       editor.setCursorBufferPosition([0]);
-      lumine.commands.dispatch(editorElement, "git-diff:move-to-next-diff");
+      lumine.commands.dispatch(editorElement, "git-chunk:move-to-next-diff");
       expect(editor.getCursorBufferPosition()).toEqual([4, 4]);
 
-      lumine.commands.dispatch(editorElement, "git-diff:move-to-previous-diff");
+      lumine.commands.dispatch(editorElement, "git-chunk:move-to-previous-diff");
       expect(editor.getCursorBufferPosition()).toEqual([0, 0]);
     });
 
@@ -519,13 +519,13 @@ describe("GitDiff package", () => {
 
       await conditionPromise(() => editorElement.querySelectorAll(".git-line-removed").length > 0);
       editor.setCursorBufferPosition([0]);
-      lumine.commands.dispatch(editorElement, "git-diff:move-to-next-diff");
+      lumine.commands.dispatch(editorElement, "git-chunk:move-to-next-diff");
       expect(editor.getCursorBufferPosition().toArray()).toEqual([4, 4]);
 
-      lumine.commands.dispatch(editorElement, "git-diff:move-to-next-diff");
+      lumine.commands.dispatch(editorElement, "git-chunk:move-to-next-diff");
       expect(editor.getCursorBufferPosition().toArray()).toEqual([0, 0]);
 
-      lumine.commands.dispatch(editorElement, "git-diff:move-to-previous-diff");
+      lumine.commands.dispatch(editorElement, "git-chunk:move-to-previous-diff");
       expect(editor.getCursorBufferPosition().toArray()).toEqual([4, 4]);
     });
 
@@ -537,16 +537,18 @@ describe("GitDiff package", () => {
       spyOn(lumine.notifications, "addWarning");
 
       expect(() =>
-        lumine.commands.dispatch(outsideElement, "git-diff:move-to-next-diff"),
+        lumine.commands.dispatch(outsideElement, "git-chunk:move-to-next-diff"),
       ).not.toThrow();
-      expect(lumine.commands.canDispatch(outsideElement, "git-diff:move-to-next-diff")).toBe(false);
+      expect(lumine.commands.canDispatch(outsideElement, "git-chunk:move-to-next-diff")).toBe(
+        false,
+      );
       expect(lumine.notifications.addWarning).not.toHaveBeenCalled();
 
       outsideEditor.destroy();
     });
 
     describe("when the wrapAroundOnMoveToDiff config option is false", () => {
-      beforeEach(() => lumine.config.set("git-diff.wrapAroundOnMoveToDiff", false));
+      beforeEach(() => lumine.config.set("git-chunk.wrapAroundOnMoveToDiff", false));
 
       it("does not wraps around to the first/last diff in the file", async () => {
         editor.insertText("a");
@@ -558,16 +560,16 @@ describe("GitDiff package", () => {
         );
 
         editor.setCursorBufferPosition([0]);
-        lumine.commands.dispatch(editorElement, "git-diff:move-to-next-diff");
+        lumine.commands.dispatch(editorElement, "git-chunk:move-to-next-diff");
         expect(editor.getCursorBufferPosition()).toEqual([4, 4]);
 
-        lumine.commands.dispatch(editorElement, "git-diff:move-to-next-diff");
+        lumine.commands.dispatch(editorElement, "git-chunk:move-to-next-diff");
         expect(editor.getCursorBufferPosition()).toEqual([4, 4]);
 
-        lumine.commands.dispatch(editorElement, "git-diff:move-to-previous-diff");
+        lumine.commands.dispatch(editorElement, "git-chunk:move-to-previous-diff");
         expect(editor.getCursorBufferPosition()).toEqual([0, 0]);
 
-        lumine.commands.dispatch(editorElement, "git-diff:move-to-previous-diff");
+        lumine.commands.dispatch(editorElement, "git-chunk:move-to-previous-diff");
         expect(editor.getCursorBufferPosition()).toEqual([0, 0]);
       });
     });
@@ -577,12 +579,12 @@ describe("GitDiff package", () => {
     const lineNumberGutterSelector = '[gutter-name="line-number"]';
 
     beforeEach(() => {
-      lumine.config.set("git-diff.showIconsInEditorGutter", true);
+      lumine.config.set("git-chunk.showIconsInEditorGutter", true);
     });
 
-    it("the gutter has a git-diff-icon class", async () => {
+    it("the gutter has a git-chunk-icon class", async () => {
       await conditionPromise(() => screenUpdates > 0);
-      expect(editorElement.querySelector(lineNumberGutterSelector)).toHaveClass("git-diff-icon");
+      expect(editorElement.querySelector(lineNumberGutterSelector)).toHaveClass("git-chunk-icon");
     });
 
     it("decorates the line-number gutter when a custom gutter precedes it", async () => {
@@ -593,33 +595,33 @@ describe("GitDiff package", () => {
       const gutters = editorElement.querySelectorAll(".gutter");
       expect(gutters[0].getAttribute("gutter-name")).toBe("custom");
 
-      lumine.config.set("git-diff.showIconsInEditorGutter", false);
-      lumine.config.set("git-diff.showIconsInEditorGutter", true);
+      lumine.config.set("git-chunk.showIconsInEditorGutter", false);
+      lumine.config.set("git-chunk.showIconsInEditorGutter", true);
 
       expect(editorElement.querySelector('[gutter-name="custom"]')).not.toHaveClass(
-        "git-diff-icon",
+        "git-chunk-icon",
       );
-      expect(editorElement.querySelector(lineNumberGutterSelector)).toHaveClass("git-diff-icon");
+      expect(editorElement.querySelector(lineNumberGutterSelector)).toHaveClass("git-chunk-icon");
     });
 
-    it("keeps the git-diff-icon class when editor.showLineNumbers is toggled", async () => {
+    it("keeps the git-chunk-icon class when editor.showLineNumbers is toggled", async () => {
       await conditionPromise(() => screenUpdates > 0);
 
       lumine.config.set("editor.showLineNumbers", false);
       expect(editorElement.querySelector(lineNumberGutterSelector)).not.toHaveClass(
-        "git-diff-icon",
+        "git-chunk-icon",
       );
 
       lumine.config.set("editor.showLineNumbers", true);
-      expect(editorElement.querySelector(lineNumberGutterSelector)).toHaveClass("git-diff-icon");
+      expect(editorElement.querySelector(lineNumberGutterSelector)).toHaveClass("git-chunk-icon");
     });
 
-    it("removes the git-diff-icon class when the showIconsInEditorGutter config option set to false", async () => {
+    it("removes the git-chunk-icon class when the showIconsInEditorGutter config option set to false", async () => {
       await conditionPromise(() => screenUpdates > 0);
 
-      lumine.config.set("git-diff.showIconsInEditorGutter", false);
+      lumine.config.set("git-chunk.showIconsInEditorGutter", false);
       expect(editorElement.querySelector(lineNumberGutterSelector)).not.toHaveClass(
-        "git-diff-icon",
+        "git-chunk-icon",
       );
     });
   });

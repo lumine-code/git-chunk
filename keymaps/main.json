@@ -4,8 +4,8 @@
   // file: reached from a find field they would step through the diffs of the
   // editor behind it.
   "lumine-text-editor:not([mini])": {
-    "alt-g down": "git-diff:move-to-next-diff",
-    "alt-g up": "git-diff:move-to-previous-diff",
-    "alt-g d": "git-diff:toggle-diff-list"
+    "alt-g down": "git-chunk:move-to-next-diff",
+    "alt-g up": "git-chunk:move-to-previous-diff",
+    "alt-g d": "git-chunk:toggle-diff-list"
   }
 }

@@ -4,7 +4,7 @@ const fs = require("@lumine-code/fs-plus");
 const temp = require("@lumine-code/fs-temp").track();
 const captureFixture = require("./fixture");
 
-describe("git-diff marker layer", () => {
+describe("git-chunk marker layer", () => {
   // Processing fixtures use a real grammar; None deliberately disables this package.
   beforeEach(async () => {
     await lumine.packages.activatePackage("language-text");
@@ -49,7 +49,7 @@ describe("git-diff marker layer", () => {
   }
 
   // Attached the way a renderer's layer host attaches it, then waited out
-  // until the editor's GitDiffView applied its first computation. `repo:
+  // until the editor's GitChunkView applied its first computation. `repo:
   // false` skips that wait — a repository-less view keeps `diffs` null
   // forever, which is indistinguishable from one still resolving.
   async function createInitializedLayer(layerEditor, { repo = true } = {}) {
@@ -81,12 +81,12 @@ describe("git-diff marker layer", () => {
     jasmine.attachToDOM(workspaceElement);
     layers = [];
 
-    projectPath = temp.mkdirSync("git-diff-marker-");
+    projectPath = temp.mkdirSync("git-chunk-marker-");
     fs.copySync(path.join(__dirname, "fixtures", "working-dir"), projectPath);
     fs.moveSync(path.join(projectPath, "git.git"), path.join(projectPath, ".git"));
 
     editor = await lumine.workspace.open(path.join(projectPath, "sample.js"));
-    const pack = await lumine.packages.activatePackage("git-diff");
+    const pack = await lumine.packages.activatePackage("git-chunk");
     mainModule = pack.mainModule;
     provider = mainModule.provideMarkerLayer();
   });
@@ -100,12 +100,12 @@ describe("git-diff marker layer", () => {
   });
 
   describe("marker.layer service provider", () => {
-    it("describes the git-diff layer", () => {
-      expect(provider.name).toBe("git-diff");
+    it("describes the git-chunk layer", () => {
+      expect(provider.name).toBe("git-chunk");
       expect(provider.position).toBe("right");
       expect(provider.merge).toBe(true);
-      expect(provider.enabled).toBe("git-diff.marker.enabled");
-      expect(provider.threshold).toBe("git-diff.marker.threshold");
+      expect(provider.enabled).toBe("git-chunk.marker.enabled");
+      expect(provider.threshold).toBe("git-chunk.marker.threshold");
       expect(typeof provider.initialize).toBe("function");
       expect(typeof provider.getItems).toBe("function");
     });
@@ -121,7 +121,7 @@ describe("git-diff marker layer", () => {
     });
 
     it("reports no markers for editors outside any repository", async () => {
-      const outsidePath = temp.mkdirSync("git-diff-marker-out-");
+      const outsidePath = temp.mkdirSync("git-chunk-marker-out-");
       const outsideEditor = await lumine.workspace.open(path.join(outsidePath, "plain.txt"));
 
       const layer = await createInitializedLayer(outsideEditor, { repo: false });
