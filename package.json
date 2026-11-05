@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "description": "Marks lines in the editor gutter that have been added, edited, or deleted since the last commit.",
   "keywords": [
+    "diff",
     "gutter",
     "change",
     "hunk",
