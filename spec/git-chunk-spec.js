@@ -267,11 +267,22 @@ describe("GitChunk package", () => {
 
   describe("when the project paths change", () => {
     it("does not diff a buffer excluded by an ignored parent directory", async () => {
+      const mainModule = lumine.packages.getActivePackage("git-chunk").mainModule;
+      let fixtureView;
+      // Establish the real fixture owner before new directory notifications
+      // can supersede discovery for the path being created below.
+      await conditionPromise(() => {
+        fixtureView = mainModule.markerLayer.views.get(editor);
+        return fixtureView?.repository != null && fixtureView.diffs != null;
+      });
+      const repository = fixtureView.repository;
+      expect(fixtureView.editor).toBe(editor);
+      expect(repository.isDestroyed()).toBe(false);
+      expect(fs.realpathSync(repository.getWorkingDirectory())).toBe(fs.realpathSync(projectPath));
       const ignoredPath = path.join(projectPath, "cache", "generated.txt");
       fs.writeFileSync(path.join(projectPath, ".gitignore"), "cache/\n");
       fs.mkdirSync(path.join(projectPath, "cache"));
       fs.writeFileSync(ignoredPath, "generated\n");
-      const repository = await lumine.repositories.resolveForPath(ignoredPath);
       await repository.refreshStatusSnapshot();
       expect(repository.getStatusEntry(ignoredPath)).toBeNull();
       expect(repository.isPathIgnoredCached(ignoredPath)).toBe(true);
