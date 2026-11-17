@@ -1,4 +1,5 @@
 const path = require("path");
+const { realpathSync } = require("node:fs");
 const fs = require("@lumine-code/fs-plus");
 const temp = require("@lumine-code/fs-temp").track();
 const captureFixture = require("./fixture");
@@ -278,7 +279,9 @@ describe("GitChunk package", () => {
       const repository = fixtureView.repository;
       expect(fixtureView.editor).toBe(editor);
       expect(repository.isDestroyed()).toBe(false);
-      expect(fs.realpathSync(repository.getWorkingDirectory())).toBe(fs.realpathSync(projectPath));
+      expect(realpathSync.native(repository.getWorkingDirectory())).toBe(
+        realpathSync.native(projectPath),
+      );
       const ignoredPath = path.join(projectPath, "cache", "generated.txt");
       fs.writeFileSync(path.join(projectPath, ".gitignore"), "cache/\n");
       fs.mkdirSync(path.join(projectPath, "cache"));
