@@ -212,4 +212,20 @@ describe("shared buffer diff work", () => {
     requests[1].resolve([]);
     expect(await retry).toEqual([]);
   });
+
+  it("clears the gutter after a comparison limit and retries on the next revision", async () => {
+    const first = work.request(input);
+    requests[0].reject(
+      Object.assign(new Error("Too large"), { code: "ERR_GIT_LINE_DIFF_TOO_LARGE" }),
+    );
+    expect(await first).toEqual([]);
+    expect(await work.request(input)).toEqual([]);
+    expect(requests.length).toBe(1);
+
+    edit("a revision that fits");
+    const retry = work.request(input);
+    expect(requests.length).toBe(2);
+    requests[1].resolve([{ oldStart: 1, oldLines: 1, newStart: 1, newLines: 1 }]);
+    expect((await retry).length).toBe(1);
+  });
 });
